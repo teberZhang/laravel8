@@ -10,7 +10,7 @@ class RabbitMqTest extends Controller
 {
     public function index()
     {
-        $this->dispatch(new RabbitMqTestJob(['id' => 10, 'name' => 'jack']));
+        RabbitMqTestJob::dispatch(['id' => rand(1000, 9999), 'name' => 'jack', 'time' => date("H:i:s")])->onQueue('sqs');
         return 'success';
     }
 }
