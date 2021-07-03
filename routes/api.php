@@ -19,26 +19,47 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 $api = app('Dingo\Api\Routing\Router');
-//这里的version是版本，里面的v1是在env里面定义好的。
+
+/***
+ * Dingo-v1-api
+ * /api/test
+ */
 $api->version('v1', function($api) {
     $api->get('test', function(){
         return 'this is test dingo api';
     })->name('api.v1.test');
 });
 
-//如果切换版本
+/***
+ * Dingo-v2-api
+ * /api/test2
+ * Header:
+ * Accept:application/prs.laravel8.v2+json
+ */
 $api->version('v2', function($api){
     $api->get('test2', function(){
         return 'this is test dingo api 切换版本';
     });
 });
 
-$api->version('v1',[
-    'namespace'=>'App\Http\Controllers\Api\V1',
-    //'middleware'=>['bindings']
-], function($api) {
-    $api->post('login', 'AuthController@login');
-    $api->post('logout', 'AuthController@logout');
-    $api->post('refresh', 'AuthController@refresh');
-    $api->get('user','AuthController@user')->middleware('api:auth');
+// JWT + Dingo
+$api->version('v1', function ($api) {
+
+    /***
+     * JWT-Token 获取
+     * /api/login
+     */
+    $api->group(["namespace" => "App\Http\Controllers\Api\V1"], function ($api) {
+        $api->post('login', 'UserController@login');
+    });
+
+    /***
+     * JWT-Token 验证
+     * /api/decode
+     * Header:
+     * Authorization: Bearer+空格+token
+     */
+    $api->group(["namespace" => "App\Http\Controllers\Api\V1",'middleware'=>'auth:api'], function ($api) {
+        $api->post('decode', 'UserController@decode');
+    });
 });
