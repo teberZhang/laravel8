@@ -50,7 +50,7 @@ $api->version('v1', function ($api) {
      * /api/login
      */
     $api->group(["namespace" => "App\Http\Controllers\Api\V1"], function ($api) {
-        $api->post('login', 'UserController@login');
+        $api->post('login', 'UserController@login')->name('login');
     });
 
     /***
