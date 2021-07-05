@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UserLoginRequest;
 use App\Http\Controllers\Api\BaseController;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,16 +17,11 @@ class UserController extends BaseController
         $this->jwt = $jwt;
     }
 
-    public function login(Request $request)
+    public function login(UserLoginRequest $userLoginRequest)
     {
-        $this->validate($request, [
-            'email'    => 'required|email|max:255',
-            'password' => 'required',
-        ]);
         try {
             //验证用户是否存在，存在则颁发token，不存在，则不颁发token。
-            if (! $token = $this->jwt->attempt($request->only('email', 'password'))) {
-
+            if (! $token = $this->jwt->attempt($userLoginRequest->only('email', 'password'))) {
                 return response()->json(['user_not_found'], 404);
             }
         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
