@@ -51,6 +51,7 @@ $api->version('v1', function ($api) {
      */
     $api->group(["namespace" => "App\Http\Controllers\Api\V1"], function ($api) {
         $api->post('login', 'UserController@login')->name('login');
+        $api->get('carbon', 'CarbonController@index');
     });
 
     /***
